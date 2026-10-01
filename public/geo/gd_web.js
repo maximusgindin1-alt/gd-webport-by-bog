@@ -82,10 +82,10 @@ Module["expectedDataFileDownloads"]++;
   async function loadPackage(metadata) {
     var PACKAGE_PATH = "";
     if (typeof window === "object") {
-      PACKAGE_PATH = ********
+      PACKAGE_PATH = window["encodeURIComponent"](window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/")) + "/");
     } else if (typeof process === "undefined" && typeof location !== "undefined") {
       // web worker
-      PACKAGE_PATH = ********
+      PACKAGE_PATH = encodeURIComponent(location.pathname.substring(0, location.pathname.lastIndexOf("/")) + "/");
     }
     var PACKAGE_NAME = "out/lift/build/gd_web.data";
     var REMOTE_PACKAGE_BASE = "gd_web.data";
@@ -36472,7 +36472,7 @@ if (ENVIRONMENT_IS_NODE) {
     module["exports"] = Module;
   }
   quit_ = (status, toThrow) => {
-    process.exitCode = ********
+    process.exitCode = status;
     throw toThrow;
   };
 } else if (ENVIRONMENT_IS_SHELL) {} else // Note that this includes Node.js workers when relevant (pthreads is enabled).
@@ -36767,16 +36767,16 @@ var runtimeInitialized = false;
 
 function updateMemoryViews() {
   var b = wasmMemory.buffer;
-  HEAP8 = ********
-  HEAP16 = ********
+  HEAP8 = new Int8Array(b);
+  HEAP16 = new Int16Array(b);
   Module["HEAPU8"] = HEAPU8 = new Uint8Array(b);
-  HEAPU16 = ********
-  HEAP32 = ********
-  HEAPU32 = ********
-  HEAPF32 = ********
-  HEAPF64 = ********
-  HEAP64 = ********
-  HEAPU64 = ********
+  HEAPU16 = new Uint16Array(b);
+  HEAP32 = new Int32Array(b);
+  HEAPU32 = new Uint32Array(b);
+  HEAPF32 = new Float32Array(b);
+  HEAPF64 = new Float64Array(b);
+  HEAP64 = new BigInt64Array(b);
+  HEAPU64 = new BigUint64Array(b);
 }
 
 // include: memoryprofiler.js
@@ -36998,7 +36998,7 @@ class ExitStatus {
   name="ExitStatus";
   constructor(status) {
     this.message = `Program terminated with exit(${status})`;
-    this.status = ********
+    this.status = status;
   }
 }
 
@@ -42225,7 +42225,7 @@ var runtimeKeepaliveCounter = 0;
 var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0;
 
 var _proc_exit = code => {
-  EXITSTATUS = ********
+  EXITSTATUS = code;
   if (!keepRuntimeAlive()) {
     Module["onExit"]?.(code);
     ABORT = true;
@@ -42234,7 +42234,7 @@ var _proc_exit = code => {
 };
 
 /** @param {boolean|number=} implicit */ var exitJS = (status, implicit) => {
-  EXITSTATUS = ********
+  EXITSTATUS = status;
   checkUnflushedContent();
   // if exit() was called explicitly, warn the user if the runtime isn't actually being shut down
   if (keepRuntimeAlive() && !implicit) {
@@ -42521,7 +42521,7 @@ function checkIncomingModuleAPI() {
 function gd_js_audio(op, a, b, f, s) {
   var A = Module.__gdAudio;
   if (!A) {
-    A = ********
+    A = Module.__gdAudio = {
       ctx: null,
       master: null,
       sounds: {},
@@ -43188,7 +43188,7 @@ function gd_http_start(proxy, body, bodylen, is_post) {
     r.headers.forEach(function(v, k) {
       hs += k + ": " + v + "\r\n";
     });
-    g.status = r.********
+    g.status = r.status;
     g.headers = hs;
     g.hdr = 1;
     var cl = r.headers.get("content-length");
