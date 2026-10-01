@@ -514,9 +514,18 @@ say('gd_boot exception: ' + e);
 }
 };
 var started = false;
-function gdStart() {
-if (started) return;
-started = true;
+  function gdStart() {
+  if (started) return;
+  if (!window.WebAssembly || typeof WebAssembly.Suspending !== 'function' || typeof WebAssembly.promising !== 'function') {
+  say('This game requires WebAssembly JSPI. Enable the browser JSPI flag, then reload.');
+  var notice = document.getElementById('loadFly');
+  if (notice) {
+  notice.textContent = 'JSPI REQUIRED — ENABLE IT AND RELOAD';
+  notice.style.pointerEvents = 'none';
+  }
+  return;
+  }
+  started = true;
 window.__gdLoadStarted = true;
 resetProgress();
 var startEl = document.getElementById('start');
