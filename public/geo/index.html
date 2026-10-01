@@ -141,8 +141,6 @@ gdSaveTimer = null;
 try { if (Module._gd_request_save) Module._gd_request_save(); } catch (e) {}
 }, 2500);
 }
-window.addEventListener('mousedown', scheduleSave);
-window.addEventListener('keydown', scheduleSave);
 setInterval(function () {
 if (!window.__gdLoadStarted || gdProgDone) return;
 if (!gdAssetsFell) {
@@ -621,13 +619,6 @@ inputButton(e, false);
 window.addEventListener('pointercancel', function (e) {
 if (e.isPrimary === false) return;
 inputButton(e, false);
-});
-window.addEventListener('mouseup', function (e) {
-if (!ready()) return;
-console.log('[page] mouseup btn=' + e.button + ' lp=0x' + pos(e).toString(16));
-var m = e.button === 2 ? WM_RBUTTONUP : (e.button === 1 ? WM_MBUTTONUP : WM_LBUTTONUP);
-push(m, 0, pos(e));
-if (e.target === el) e.preventDefault();
 });
 window.addEventListener('mousemove', function (e) {
 if (!ready()) return;
