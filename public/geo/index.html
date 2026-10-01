@@ -592,13 +592,26 @@ push(0x0007, 0, 0);
 push(0x001c, 1, 0);
 }
 window.__gdAckFocus = ackFocus;
-window.addEventListener('mousedown', function (e) {
-if (!overCanvas(e)) return;
-console.log('[page] mousedown btn=' + e.button + ' lp=0x' + pos(e).toString(16));
-var m = e.button === 2 ? WM_RBUTTONDOWN : (e.button === 1 ? WM_MBUTTONDOWN : WM_LBUTTONDOWN);
-var w = e.button === 2 ? 2 : (e.button === 1 ? 16 : 1);
-push(m, w, pos(e));
-e.preventDefault();
+function inputButton(e, down) {
+if (down ? !overCanvas(e) : !ready()) return;
+var m;
+if (e.button === 2) m = down ? WM_RBUTTONDOWN : WM_RBUTTONUP;
+else if (e.button === 1) m = down ? WM_MBUTTONDOWN : WM_MBUTTONUP;
+else m = down ? WM_LBUTTONDOWN : WM_LBUTTONUP;
+push(m, down ? (e.button === 2 ? 2 : (e.button === 1 ? 16 : 1)) : 0, pos(e));
+if (e.target === el) e.preventDefault();
+}
+window.addEventListener('pointerdown', function (e) {
+if (e.isPrimary === false) return;
+inputButton(e, true);
+});
+window.addEventListener('pointerup', function (e) {
+if (e.isPrimary === false) return;
+inputButton(e, false);
+});
+window.addEventListener('pointercancel', function (e) {
+if (e.isPrimary === false) return;
+inputButton(e, false);
 });
 window.addEventListener('mouseup', function (e) {
 if (!ready()) return;
