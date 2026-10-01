@@ -24,7 +24,7 @@ if (nearBottom) consoleEl.scrollTop = consoleEl.scrollHeight;
 var seenDep = Object.create(null);
 var QUIET = ['[perf]', '[frame]', '[webgl]', '[io]', '[tex]', '[pngc]',
 '[pngd]', '[fmtf]', '[sink]', '[htb]', '[disp]', '[rawin]',
-'[touch]', '[cte]', '[list]', '[drs]', '[tex2]'];
+'[touch]', '[cte]', '[list]', '[drs]', '[tex2]', '[dc]'];
 function isQuiet(str) {
 for (var i = 0; i < QUIET.length; ++i) {
 if (str.lastIndexOf(QUIET[i], 0) === 0) return true;
@@ -33,7 +33,8 @@ return false;
 }
 function say(s) {
 var str = String(s);
-if (!isQuiet(str)) console.log(s);
+if (isQuiet(str)) return;
+console.log(s);
 if (str.indexOf('dependency: ') === 0 ||
 str.indexOf('still waiting on run dependencies') === 0 ||
 str === '(end of list)') {
